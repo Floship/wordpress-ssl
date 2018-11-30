@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    image: wordpress
+    volumes:
+      - ./server.crt:/etc/apache2/ssl/server.crt
+      - ./server.key:/etc/apache2/ssl/server.key
+      - ./wp-init.sh:/usr/local/bin/apache2-custom.sh
+      - ./apache2-vhosts.conf:/etc/apache2/sites-available/apache2-vhosts.conf
+    links:
+      - mysql
+    environment:
+      - WORDPRESS_DB_PASSWORD=password
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "bash -c apache2-custom.sh"
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=my-wpdb
